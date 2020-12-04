@@ -1,14 +1,21 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const discordSdk = require("./modules/discord");
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 
 app.use(bodyParser.json());
 
-app.post("/hook", (req, res) => {
-  console.log(req.body); // Call your action on the request here
+app.get("/", (req, res) => {
   res.status(200).end(); // Responding is important
 });
 
-app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
+app.post("/hook/:id/:token", (req, res) => {
+  discordSdk.send_message(req.params.id, req.params.token, req.body);
+  res.status(200).end(); // Responding is important
+});
+
+app.listen(process.env.PORT || PORT, () =>
+  console.log(`Server is running on ${PORT}`)
+);
